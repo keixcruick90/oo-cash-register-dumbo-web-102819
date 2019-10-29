@@ -1,18 +1,31 @@
 class CashRegister
-  attr_accessor :coupon
 
-    def checkout
-      total = 0
-      #the shopping_cart method holds an array of all the user's items
-      shopping_cart.each do |item|
-        total += item.price
-      end
+  attr_accessor :items, :discount, :total, :last_transaction
 
-      if coupon
-        total = total - total * coupon / 100.00
-      end
+  def initialize(discount=0)
+    @total = 0
+    @discount = discount
+    @items = []
+  end
 
-      total
-
+  def add_item(title, amount, quantity=1)
+    self.total += amount * quantity
+    quantity.times do
+      items << title
     end
+    self.last_transaction = amount * quantity
+  end
+
+  def apply_discount
+    if discount != 0
+      self.total = (total * ((100.0 - discount.to_f)/100)).to_i
+      "After the discount, the total comes to $#{self.total}."
+    else
+      "There is no discount to apply."
+    end
+  end
+
+  def void_last_transaction
+    self.total = self.total - self.last_transaction
+  end
 end
